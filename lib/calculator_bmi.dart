@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bmi_calculator/my_shared_preferences.dart';
 
