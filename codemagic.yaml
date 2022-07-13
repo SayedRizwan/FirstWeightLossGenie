@@ -2,21 +2,30 @@
 # Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
 
 workflows:
-  default-workflow:
-    name: Default Workflow
-    max_build_duration: 60
-    environment:
-      flutter: default
-      xcode: latest
-      cocoapods: default
+  my-workflow:
     scripts:
-      - flutter packages pub get
-      - find . -name "Podfile" -execdir pod install \;
-      - flutter build ios --debug --no-codesign
+      - name: Default Workflow
+        script: 
+          - flutter packages pub get
+          - find . -name "Podfile" -execdir pod install \;
+          - flutter build ios --debug --no-codesign
+      - name: Add signing certificate
+        script: |
+          set -e # exit on first failed command
+
+          echo ${CERTIFICATE?} | base64 --decode > /tmp/certificate.p12
+          keychain initialize
+          keychain add-certificates \
+              --certificate /tmp/certificate.p12 \
+              --certificate-password ${CERTIFICATE_PASSWORD?}
+      - name: Increment build number
+        script: agvtool new-version -all $BUILD_NUMBER
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
+      - name: Build ipa for distribution
+        script: xcode-project build-ipa \
+                    --workspace "${XCODE_WORKSPACE?}" \
+                    --scheme "${XCODE_SCHEME?}"
     artifacts:
       - build/ios/ipa/*.ipa
-      email:
-        recipients:
-          - sayedrizwan.bsef18@iba-suk.edu.pk
-
 
