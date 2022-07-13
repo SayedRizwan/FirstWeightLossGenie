@@ -15,11 +15,6 @@ workflows:
       - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
-     # - /tmp/xcodebuild_logs/*.log
-     # - '*.snap'
-     # - build/windows/**/*.msix
-     # - flutter_drive.log
-   # publishing:
       email:
         recipients:
           - sayedrizwan.bsef18@iba-suk.edu.pk
